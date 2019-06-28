@@ -1,8 +1,20 @@
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from .models import Question, Choice
+from .forms import QuestionForm
+
 # ...
+def question_new(request):    
+    if request.method == "POST":
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = QuestionForm()
+    return render(request, 'polls/question_edit.html', {'form': form})
+
 def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/detail.html', {'question': question})
